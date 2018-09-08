@@ -3,3 +3,33 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+.button-container {
+  width: 400px;
+  margin-bottom: 10px;
+}
+.parameters {
+  width: 250px;
+}
+.configure-buttons {
+  margin: 10px 0;
+}
+.configure-buttons button {
+  margin-right: 5px;
+}
+.parameter-container label {
+  float: left;
+}
+.parameter-container input {
+  float: right;
+  width: 40px;
+}
+.parameter-container {
+  clear: both;
+  height: 20px;
+}
+.background-color-input {
+  width: 70px !important;
+}
+.image-container {
+  margin-bottom: 10px;
+}
