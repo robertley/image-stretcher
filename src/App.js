@@ -21,7 +21,12 @@ import eagles from './images/eagles.jpg'
 import vapor from './images/vapor.png'
 import citysun from './images/citysunset.JPG'
 
-// TODO save, y coordinates
+// TODO 
+// save
+// y coordinates
+// click on image for coordinates
+// color color picker
+// upload photo
 
 class App extends Component {
 
@@ -53,7 +58,7 @@ class App extends Component {
   }
 
   createArt() {
-    if (this.startingPos.value >= 0 && this.endingPos.value > 0 && this.stretchAmt.value > 0 && this.lineWidth.value > 0) {
+    if (this.startingXPos.value >= 0 && this.endingXPos.value > 0 && this.stretchAmt.value > 0 && this.strokeHeight.value > 0) {
 
       const resizeMultiplier = this.resizeMultiplier.value
 
@@ -68,10 +73,10 @@ class App extends Component {
       const finishedCanvas = this.finishedCanvas
       const context = finishedCanvas.getContext("2d")
       const stretchAmt = this.stretchAmt.value * resizeMultiplier
-      const startingPos = this.startingPos.value
-      const endingPos = this.endingPos.value
-      finishedCanvas.width = stretchAmt * (endingPos - startingPos)
-      finishedCanvas.height = imageHeight * resizeMultiplier
+      const startingXPos = this.startingXPos.value
+      const endingXPos = this.endingXPos.value
+      finishedCanvas.width = this.canvasWidth.value === "" ? stretchAmt * (endingXPos - startingXPos) : this.canvasWidth.value
+      finishedCanvas.height = this.canvasHeight.value === "" ? imageHeight * resizeMultiplier : this.canvasHeight.value
 
       var iter = 0
 
@@ -84,7 +89,7 @@ class App extends Component {
         context.stroke()
       }
 
-      for (var i = startingPos; i < endingPos; i++) {
+      for (var i = startingXPos; i < endingXPos; i++) {
         
         const pixelsR = []
         const pixelsG = []
@@ -97,15 +102,15 @@ class App extends Component {
           pixelsB.push(imgData.data[2])
         }
 
-        var lineWidth = parseInt(this.lineWidth.value)
+        var strokeHeight = parseInt(this.strokeHeight.value)
         var angleConstant = this.angleConstant.value * resizeMultiplier
 
-        context.lineWidth = lineWidth * resizeMultiplier
-        console.log(lineWidth/2)
-        for (var k = (lineWidth === 1 ? 1 : Math.floor(lineWidth/2)); k < imageHeight; k+=lineWidth) {
+        context.lineWidth = strokeHeight * resizeMultiplier
+        console.log(strokeHeight/2)
+        for (var k = (strokeHeight === 1 ? 1 : Math.floor(strokeHeight/2)); k < imageHeight; k+=strokeHeight) {
           context.strokeStyle = `rgb(${pixelsR[k]}, ${pixelsG[k]}, ${pixelsB[k]})`
           context.beginPath()
-          context.moveTo(iter * (stretchAmt), (k * resizeMultiplier + .5) + (angleConstant * iter)) //(.5 * lineWidth))
+          context.moveTo(iter * (stretchAmt), (k * resizeMultiplier + .5) + (angleConstant * iter)) //(.5 * strokeHeight))
           context.lineTo((iter+1) * stretchAmt, k  * resizeMultiplier + .5)
           context.stroke()
         }
@@ -115,26 +120,36 @@ class App extends Component {
   }
 
   configureParametes(i) {
+    this.startingXPos.value = 0
     if (i === 0) {
-      this.startingPos.value = 0
-      this.endingPos.value = 20
+      this.endingXPos.value = 20
       this.stretchAmt.value = 30
-      this.lineWidth.value = 30
+      this.strokeHeight.value = 30
       this.angleConstant.value = 10
     }
     if (i === 1) {
-      this.startingPos.value = 0
-      this.endingPos.value = 500
+      this.endingXPos.value = 500
       this.stretchAmt.value = 10
-      this.lineWidth.value = 2
+      this.strokeHeight.value = 2
       this.angleConstant.value = -2
     }
     if (i === 2) {
-      this.startingPos.value = 0
-      this.endingPos.value = 9
+      this.endingXPos.value = 9
       this.stretchAmt.value = 100
-      this.lineWidth.value = 3
+      this.strokeHeight.value = 3
       this.angleConstant.value = 10
+    }
+    if (i === 3) {
+      this.endingXPos.value = 10
+      this.stretchAmt.value = 100
+      this.strokeHeight.value = 100
+      this.angleConstant.value = 10
+    }
+    if (i === 4) {
+      this.endingXPos.value = 10
+      this.stretchAmt.value = 50
+      this.strokeHeight.value = 50
+      this.angleConstant.value = 1000
     }
   }
 
@@ -220,23 +235,25 @@ class App extends Component {
       })
     }
     if (i === 16) {
+      // B, #001a00
       this.setState({
         currImage: birdMod 
       })
     }
     if (i === 17) {
+      // A, 680, 700
       this.setState({
-        // A, 680, 700
         currImage: eagles 
       })
     }
     if (i === 18) {
+      // D, 503, 513, blue
       this.setState({
         currImage: vapor 
       })
     }
     if (i === 19) {
-      // 400,409,100,3,10,black
+      // C, 400,409 black
       this.setState({
         currImage: citysun 
       })
@@ -276,13 +293,14 @@ class App extends Component {
           </div>
           <div className="parameter-container">
             <label>Starting x coordinate:</label>
-            <input ref={(node) => this.startingPos = node} />
+            <input ref={(node) => this.startingXPos = node} />
           </div>
           <hr/>
           <div className="parameter-container">
             <label>Ending x coordinate:</label>
-            <input ref={(node) => this.endingPos = node} />
+            <input ref={(node) => this.endingXPos = node} />
           </div>
+
           <hr/>
           <div className="parameter-container">
             <label>Stretch width:</label>
@@ -290,8 +308,8 @@ class App extends Component {
           </div>
           <hr/>
           <div className="parameter-container">
-            <label>Line width:</label>
-            <input ref={(node) => this.lineWidth = node} />
+            <label>Stroke Height:</label>
+            <input ref={(node) => this.strokeHeight = node} />
           </div>
           <hr/>
           <div className="parameter-container">
@@ -302,6 +320,26 @@ class App extends Component {
           <div className="parameter-container">
             <label>Resize Multiplier:</label>
             <input ref={(node) => this.resizeMultiplier = node} defaultValue="1" />
+          </div>
+          {/* <hr/>
+          <div className="parameter-container">
+            <label>Starting y coordinate:</label>
+            <input ref={(node) => this.startingYPos = node} />
+          </div>
+          <hr/>
+          <div className="parameter-container">
+            <label>Ending y coordinate:</label>
+            <input ref={(node) => this.endingYPos = node} />
+          </div> */}
+          <hr/>
+          <div className="parameter-container">
+            <label>Forced Canvas Width:</label>
+            <input ref={(node) => this.canvasWidth = node} />
+          </div>
+          <hr/>
+          <div className="parameter-container">
+            <label>Forced Canvas Height:</label>
+            <input ref={(node) => this.canvasHeight = node} />
           </div>
           <hr/>
           <div className="parameter-container">
@@ -314,6 +352,8 @@ class App extends Component {
             <button onClick={() => this.configureParametes(0)}>A</button>
             <button onClick={() => this.configureParametes(1)}>B</button>
             <button onClick={() => this.configureParametes(2)}>C</button>
+            <button onClick={() => this.configureParametes(3)}>D</button>
+            <button onClick={() => this.configureParametes(4)}>E</button>
           </div>
           <button onClick={this.createArt}>Create Image</button><br/>
         </div>
